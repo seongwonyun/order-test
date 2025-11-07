@@ -1,26 +1,81 @@
+/* Tailwind v4: @tailwind base/components/utilities → @import "tailwindcss" */
 @import "tailwindcss";
 
+/* ── 1) 디자인 토큰 (:root / .dark) - hsl 래핑 ───────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* shadcn 스타일 변수 (예시값): 필요시 프로젝트 팔레트로 교체 */
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(240 10% 3.9%);
+  --border: hsl(240 5.9% 90%);
 }
 
+.dark {
+  --background: hsl(240 10% 3.9%);
+  --foreground: hsl(0 0% 98%);
+  --border: hsl(240 3.7% 15.9%);
+}
+
+/* ── 2) Tailwind v4 테마 매핑 (@theme inline) ──────────────────────────
+   - 여기서 선언한 변수 이름이 그대로 유틸리티 이름이 됩니다.
+   - bg-background / text-foreground / border-border 등의 유틸 사용 가능
+*/
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-border: var(--border);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── 3) 베이스 스타일 ───────────────────────────────────────────────── */
+* {
+  /* v4에서도 @apply 사용 가능하지만, 전역엔 변수 직접 참조가 안전 */
+  border-color: var(--color-border);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* ── 4) 유틸리티(커스텀 클래스) ─────────────────────────────────────── */
+/* 스크롤 숨김 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* iOS 하단 세이프 에어리어 보정 */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── 5) 커스텀 스크롤바 (웹킷 계열) ─────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* ── 6) 모바일 최적화 ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* iOS 자동 줌 방지 */
+  }
 }
